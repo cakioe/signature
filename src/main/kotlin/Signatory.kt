@@ -17,6 +17,7 @@ interface Service {
     fun genSignature(params: Map<String, Any>): String
     fun toBase64String(params: Map<String, Any>): String
     fun checkSignature(params: Map<String, Any>, sign: String): Boolean
+    fun decryptBase64String(params: String): Map<String, Any>
 }
 
 /**
@@ -108,5 +109,24 @@ class Signatory(private val appKey: String = "") : Service {
      */
     override fun checkSignature(params: Map<String, Any>, sign: String): Boolean {
         return sign == genSignature(params)
+    }
+
+
+    /**
+     * decrypt base64 string to map
+     *
+     * @param params: Map<String, Any>
+     * @param params: String
+     * @return Map<String, Any>
+     * @since 1.0.2
+     */
+    override fun decryptBase64String(params: String): Map<String, Any> {
+        try {
+            val content = String(Base64.getDecoder().decode(params), StandardCharsets.UTF_8)
+            val type = object : com.google.gson.reflect.TypeToken<Map<String, Any>>() {}.type
+            return Gson().fromJson(content, type)
+        } catch (e: Exception) {
+            throw e
+        }
     }
 }
