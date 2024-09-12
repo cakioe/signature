@@ -10,7 +10,7 @@ import java.util.Date
  * @since 1.0.3
  */
 class Carbon(private val timestamp: Long) {
-    private fun toIntArray() : IntArray {
+    fun toIntArray() : IntArray {
         val date = Date(this.timestamp)
         val calendar = Calendar.getInstance()
         calendar.time = date
