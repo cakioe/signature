@@ -6,7 +6,7 @@
 
     <groupId>io.github.cakioe</groupId>
     <artifactId>signature</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.5</version>
 
     <licenses>
         <license>
@@ -168,7 +168,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.6</version>
+                <version>3.2.4</version>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
