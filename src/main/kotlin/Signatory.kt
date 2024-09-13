@@ -1,12 +1,16 @@
 package io.github.cakioe
 
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.math.BigInteger
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.time.Instant
 import java.util.Base64
+
+// https://stackoverflow.com/a/33381385
+inline fun <reified T> Gson.fromJson(json: String) = fromJson<T>(json, object: TypeToken<T>() {}.type)
 
 /**
  * This is an interface for service
@@ -119,12 +123,12 @@ class Signatory(private val appKey: String = "") : Service {
      * @param params: String
      * @return Map<String, Any>
      * @since 1.0.2
+     * @update 1.0.8
      */
     override fun decryptBase64String(params: String): Map<String, Any> {
         try {
             val content = String(Base64.getDecoder().decode(params), StandardCharsets.UTF_8)
-            val type = object : com.google.gson.reflect.TypeToken<Map<String, Any>>() {}.type
-            return Gson().fromJson(content, type)
+            return Gson().fromJson<Map<String, Any>>(content)
         } catch (e: Exception) {
             throw e
         }
