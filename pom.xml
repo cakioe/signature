@@ -16,11 +16,11 @@
     </licenses>
     <name>signature</name>
     <description>This project provides a signature utility for Kotlin applications.</description>
-    <url>https://github.com/cakioe/signature.kt</url>
+    <url>https://github.com/cakioe/signature</url>
     <scm>
-        <url>https://github.com/cakioe/signature.kt</url>
-        <connection>scm:git:git://github.com/cakioe/signature.kt.git</connection>
-        <developerConnection>scm:git:ssh://github.com/cakioe/signature.kt.git</developerConnection>
+        <url>https://github.com/cakioe/signature</url>
+        <connection>scm:git:git://github.com/cakioe/signature.git</connection>
+        <developerConnection>scm:git:ssh://github.com/cakioe/signature.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
     <developers>
