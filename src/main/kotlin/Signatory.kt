@@ -18,6 +18,7 @@ inline fun <reified T> Gson.fromJson(json: String) = fromJson<T>(json, object: T
  * @author cleveng
  */
 interface Service {
+    fun prepareParams(params: Map<String, Any>): Map<String, Any>
     fun genSignature(params: Map<String, Any>): String
     fun toBase64String(params: Map<String, Any>): String
     fun checkSignature(params: Map<String, Any>, sign: String): Boolean
@@ -41,6 +42,35 @@ interface Service {
  * @since 1.0.0
  */
 class Signatory(private val appKey: String = "") : Service {
+    /**
+     * Prepare the params for signing.
+     * If not exist "timestamp", then append a timestamp (second-level timestamp).
+     * If not exist "sign", then append a signature.
+     *
+     * @param params: Map<String, Any>
+     * @return Map<String, Any>
+     * @since 1.0.9
+     */
+    override fun prepareParams(params: Map<String, Any>): Map<String, Any> {
+        val payload = params.toMutableMap().apply {
+            /**
+             * if not exist "timestamp", then append a timestamp (second-level timestamp)
+             */
+            if (!containsKey("timestamp")) {
+                put("timestamp", Instant.now().epochSecond.toString())
+            }
+
+            /**
+             * if not exist "sign", then append a signature
+             */
+            if (!containsKey("sign")) {
+                put("sign", genSignature(this))
+            }
+        }
+
+        return payload
+    }
+
     /**
      * gen signature with params
      *
@@ -82,21 +112,7 @@ class Signatory(private val appKey: String = "") : Service {
      * @since 1.0.0
      */
     override fun toBase64String(params: Map<String, Any>): String {
-        val payload = params.toMutableMap().apply {
-            /**
-             * if not exist "timestamp", then append a timestamp (second-level timestamp)
-             */
-            if (!containsKey("timestamp")) {
-                put("timestamp", Instant.now().epochSecond.toString())
-            }
-
-            /**
-             * if not exist "sign", then append a signature
-             */
-            if (!containsKey("sign")) {
-                put("sign", genSignature(this))
-            }
-        }
+        val payload = prepareParams(params)
 
         // 将 map 转换为 json
         val reply = Gson().toJson(payload).toByteArray()
