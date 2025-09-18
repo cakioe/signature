@@ -52,7 +52,8 @@ class Signatory(private val appKey: String = "") : Service {
      * @since 1.0.9
      */
     override fun prepareParams(params: Map<String, Any>): Map<String, Any> {
-        val payload = params.toMutableMap()
+        val payload = params.mapValues { it.value.toString() }.toMutableMap()
+
         /**
          * if not exist "timestamp", then append a timestamp (second-level timestamp)
          */
@@ -61,7 +62,7 @@ class Signatory(private val appKey: String = "") : Service {
         /**
          * if not exist "sign", then append a signature
          */
-        payload.putIfAbsent("sign") { genSignature(payload) }
+        payload.putIfAbsent("sign", genSignature(payload))
 
         // immutability (optional)
         return payload.toMap()
