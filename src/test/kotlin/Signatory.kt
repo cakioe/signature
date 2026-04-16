@@ -1,7 +1,9 @@
 package io.github
 
+import com.google.gson.Gson
 import io.github.cakioe.Signatory
 import org.junit.Test
+import java.time.Instant
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -88,5 +90,29 @@ class ExampleUnitTest {
             "eyJrZXkxIjoiMSIsImtleTIiOiIyIiwia2V5MyI6IjMiLCJ0aW1lc3RhbXAiOiIxNzU4MTg0NTIzIiwic2lnbiI6IjNFNjYxQUVBNUJCNEIwNzEyNzRFREM2MjkwODlDQTM0In0="
         val result = this.signer.decryptBase64String(params)
         println("decryptBase64String_test: $result")
+    }
+
+    /**
+     * Test token function.
+     *
+     * This function tests that the token function can correctly
+     * generate a signature for a map of data and verify the signature.
+     *
+     * @since 1.0.12
+     */
+    @Test
+    fun token_test() {
+        val token = this.signer.token();
+        val timestamp = System.currentTimeMillis() / 1000
+
+        val payload = Gson().toJson(
+            mapOf("serial_no" to "da4f77d59e13935a") // 这里使用 设备序列号
+        ).toByteArray()
+
+        val sig = token.generate(timestamp, payload)
+        println("sig: $sig")
+
+        val isOk = token.verify(timestamp, payload, sig)
+        println("verify: $isOk")
     }
 }

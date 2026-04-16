@@ -43,4 +43,20 @@ Append the map to the sign signature field and convert it to a base64 string
 
 Verify the signature of the incoming map and the signature
 
-校验签名
+## Token 生成
+
+```kotlin
+val signer = Signatory("appkey").token();
+
+val timestamp = System.currentTimeMillis() / 1000
+
+val payload = Gson().toJson(
+    mapOf("serial_no" to "da4f77d59e13935a")
+).toByteArray()
+
+val sig = signer.generate(timestamp, payload)
+println("sig: $sig")
+
+val isOk = signer.verify(timestamp, payload, sig)
+println("verify: $isOk")
+```

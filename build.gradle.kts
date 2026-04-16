@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "io.github.cakioe"
-version = "1.0.11"
+version = "1.0.12"
 
 repositories {
     mavenCentral()
@@ -13,9 +13,11 @@ repositories {
 dependencies {
     implementation("org.sonatype.central:central-publishing-maven-plugin:0.5.0")
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation("junit:junit:4.12")
 
     testImplementation(kotlin("test"))
     testImplementation("junit:junit:4.13.2")
+    implementation(kotlin("test"))
 }
 
 kotlin {

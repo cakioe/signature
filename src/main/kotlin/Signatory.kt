@@ -23,6 +23,7 @@ interface Service {
     fun toBase64String(params: Map<String, Any>): String
     fun checkSignature(params: Map<String, Any>, sign: String): Boolean
     fun decryptBase64String(params: String): Map<String, Any>
+    fun token(): Token
 }
 
 /**
@@ -41,7 +42,7 @@ interface Service {
  * @version 1.0.0
  * @since 1.0.0
  */
-class Signatory(private val appKey: String = "") : Service {
+class Signatory(private val appKey: String) : Service {
     /**
      * Prepare the params for signing.
      * If not exist "timestamp", then append a timestamp (second-level timestamp).
@@ -145,5 +146,9 @@ class Signatory(private val appKey: String = "") : Service {
         } catch (e: Exception) {
             throw e
         }
+    }
+
+    override fun token(): Token {
+        return Token(this.appKey)
     }
 }
