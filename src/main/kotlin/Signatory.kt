@@ -24,6 +24,7 @@ interface Service {
     fun checkSignature(params: Map<String, Any>, sign: String): Boolean
     fun decryptBase64String(params: String): Map<String, Any>
     fun token(): Token
+    fun hmacSha256Signer(): HmacSha256Signer
 }
 
 /**
@@ -150,5 +151,9 @@ class Signatory(private val appKey: String) : Service {
 
     override fun token(): Token {
         return Token(this.appKey)
+    }
+
+    override fun hmacSha256Signer(): HmacSha256Signer {
+        return HmacSha256Signer(this.appKey)
     }
 }

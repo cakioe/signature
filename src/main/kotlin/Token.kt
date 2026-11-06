@@ -1,6 +1,5 @@
 package io.github.cakioe
 
-import com.google.gson.Gson
 import java.lang.System.currentTimeMillis
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec

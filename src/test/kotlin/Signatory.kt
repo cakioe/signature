@@ -1,9 +1,10 @@
 package io.github
 
 import com.google.gson.Gson
+import io.github.cakioe.HmacSha256Signer
 import io.github.cakioe.Signatory
+import junit.framework.TestCase.assertTrue
 import org.junit.Test
-import java.time.Instant
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -71,9 +72,9 @@ class ExampleUnitTest {
             "eyJrZXkxIjoiMSIsImtleTIiOiIyIiwia2V5MyI6IjMiLCJ0aW1lc3RhbXAiOiIxNzU4MTg0NTIzIiwic2lnbiI6IjNFNjYxQUVBNUJCNEIwNzEyNzRFREM2MjkwODlDQTM0In0="
         val result = this.signer.decryptBase64String(params)
 
-        val isOk = this.signer.checkSignature(result, result["sign"] as String)
+        val isValid = this.signer.checkSignature(result, result["sign"] as String)
 
-        println("checkSignature_test: $isOk")
+        assertTrue(isValid)
     }
 
     /**
@@ -102,17 +103,66 @@ class ExampleUnitTest {
      */
     @Test
     fun token_test() {
-        val token = this.signer.token();
+        val token = this.signer.token()
         val timestamp = System.currentTimeMillis() / 1000
 
         val payload = Gson().toJson(
-            mapOf("serial_no" to "da4f77d59e13935a") // 这里使用 设备序列号
+            mapOf("serial_no" to "da4f77d59e13935a")
         ).toByteArray()
 
-        val sig = token.generate(timestamp, payload)
-        println("sig: $sig")
+        // 生成签名
+        val signature = token.generate(timestamp, payload)
+        println("signature: $signature")
 
-        val isOk = token.verify(timestamp, payload, sig)
-        println("verify: $isOk")
+        // 验证签名
+        val isValid = token.verify(timestamp, payload, signature)
+        println("verify: $isValid")
+
+        assertTrue(isValid)
+    }
+
+    @Test
+    fun hmac_sha256_signer_test() {
+        val signer = HmacSha256Signer("your-secret")
+
+        data class TestPayload(
+            val a: Int,
+            val b: Int,
+            val c: Boolean,
+            val d: String?
+        )
+
+        // 第一步：构建对象
+        val body = TestPayload(
+            a = 1,
+            b = 2,
+            c = true,
+            d = null
+        )
+
+        // 第二步：序列化，查看 JSON
+        val json = Gson().toJson(body)
+        println("JSON: $json")
+
+        // 转换为 ByteArray
+        val payload = json.toByteArray(Charsets.UTF_8)
+
+        // 生成签名
+        val (timestamp, signature) = signer.sign(payload)
+
+        println("timestamp: $timestamp")
+        println("signature: $signature")
+
+        // 验证签名
+        val isValid = signer.verify(
+            body = payload,
+            timestamp = timestamp,
+            signature = signature,
+            tolerance = 300
+        )
+
+        println("verify: $isValid")
+
+        assertTrue(isValid)
     }
 }

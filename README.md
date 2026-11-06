@@ -23,7 +23,8 @@ fun main() {
 
 ## prepareParams / 准备参数
 
-According to the input map, the null value is filtered out, sign the remaining data, and then generate a new map.
+According to the input map, the null value is filtered out, sign the remaining data, and then
+generate a new map.
 
 根据传入的 map，过滤掉空值后进行签名再生成 map
 
@@ -58,5 +59,23 @@ val sig = signer.generate(timestamp, payload)
 println("sig: $sig")
 
 val isOk = signer.verify(timestamp, payload, sig)
+println("verify: $isOk")
+```
+
+## HmacSha256Signer 签名
+
+```kotlin
+val signer = Signatory("appkey").hmacSha256Signer();
+
+val timestamp = System.currentTimeMillis() / 1000
+
+val payload = Gson().toJson(
+    mapOf("serial_no" to "da4f77d59e13935a")
+).toByteArray()
+
+val sign = signer.sign(payload)
+println("sign: $sign")
+
+val isOk = signer.verify(timestamp, payload, sign)
 println("verify: $isOk")
 ```
